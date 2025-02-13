@@ -8,8 +8,5 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region                   = "us-west-2"
-  shared_credentials_files = ["~/.aws/credentials"]
-  profile                  = "vscode"
-
+  region = "us-west-2"
 }
