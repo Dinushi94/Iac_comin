@@ -40,13 +40,13 @@ resource "aws_route_table" "rt-public" {
 
 # Add a Route to Internet Gateway (0.0.0.0/0 for all traffic)
 resource "aws_route" "default_route" {
-  route_table_id         = aws_route_table.rt-public.id  
+  route_table_id         = aws_route_table.rt-public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw.id
 }
 
 # Associate the Public Subnet with the Public Route Table
 resource "aws_route_table_association" "public_assoc" {
-  subnet_id      = aws_subnet.public.id  
-  route_table_id = aws_route_table.rt-public.id  
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.rt-public.id
 }
