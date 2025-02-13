@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "tfsatebuckt" {
   bucket = "comin-tf-state-bucket"
 
   tags = {
-    Name        = "Comin tf"
+    Name = "Comin tf"
   }
 }
 
