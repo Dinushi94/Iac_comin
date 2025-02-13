@@ -6,7 +6,7 @@ terraform {
     bucket  = "comin-tf-state-bucket"
     key     = "terraform/statefile"
     region  = "us-west-2"
-    encrypt = true
+    encrypt = false
 
   }
 }
