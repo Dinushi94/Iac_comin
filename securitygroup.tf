@@ -1,14 +1,14 @@
 resource "aws_security_group" "hr_system_sg" {
   name        = "comin-SG"
   description = "Security group for ComIn HR System"
-  vpc_id      = aws_vpc.main.id  
+  vpc_id      = aws_vpc.main.id
 
   # Allow SSH from your IP only 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]  
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
   # Allow HTTP from anywhere

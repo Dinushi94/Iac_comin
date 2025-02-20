@@ -28,14 +28,14 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.6.0
+          terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure AWS Credentials Using OIDC
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::992382545225:role/Terraform_cicd_oidc
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: GitHubActions
-          aws-region: us-west-2
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
@@ -51,4 +51,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve
