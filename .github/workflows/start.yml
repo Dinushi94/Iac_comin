@@ -1,0 +1,36 @@
+name: "Start EC2 & Create ECR Repos"
+
+on:
+  schedule:
+    - cron: "0 10 * * *" # Runs daily at 10:00 AM UTC
+  workflow_dispatch: # Allows manual trigger
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  start-ec2-create-ecr:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "us-west-2"
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Start EC2 instance
+      - name: Start EC2 Instance
+        run: |
+          aws ec2 start-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }} --region $AWS_REGION
+
+      # Create ECR repositories
+      - name: Create ECR Repositories
+        run: |
+          REPOSITORIES=("comin-authentication-service" "comin-employee-service" "comin-organization-service" "comin-leave-management-service")
+          for REPO in "${REPOSITORIES[@]}"; do
+            aws ecr create-repository --repository-name "$REPO" || true
+          done
