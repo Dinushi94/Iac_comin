@@ -1,0 +1,36 @@
+name: "Stop EC2 & Delete ECR Repos"
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at 12:00 AM UTC (midnight)
+  workflow_dispatch: # Allows manual trigger
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  stop-ec2-delete-ecr:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "us-west-2"
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Stop EC2 instance
+      - name: Stop EC2 Instance
+        run: |
+          aws ec2 stop-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }} --region $AWS_REGION
+
+      # Delete ECR repositories
+      - name: Delete ECR Repositories
+        run: |
+          REPOSITORIES=("comin-authentication-service" "comin-employee-service" "comin-organization-service" "comin-leave-management-service")
+          for REPO in "${REPOSITORIES[@]}"; do
+            aws ecr delete-repository --repository-name "$REPO" --force || true
+          done
